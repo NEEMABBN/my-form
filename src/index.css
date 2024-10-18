@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+    direction: rtl !important;
+    font-family: "IranSans" !important;
+}
+
+@layer base {
+    @font-face {
+        font-family: "IranSans";
+        src: url(../src/assets/Fonts/IRANSansXFaNum-Regular.ttf);
+    }
+
+    @media (min-width: 1536px) {
+        .container {
+            max-width: 1351px !important;
+        }
+    }
+}
+
+.custom-file-upload input[type="file"] {
+    display: none;
+}
