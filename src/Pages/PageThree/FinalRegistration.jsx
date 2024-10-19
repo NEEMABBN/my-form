@@ -7,17 +7,17 @@ import {
   FaFacebook,
   FaGoogle,
   FaLinkedin,
-  FaPause,
-  FaPlay,
+  FaRegStopCircle,
 } from "react-icons/fa";
 import { VscDebugRestart } from "react-icons/vsc";
-import { BsFillCloudCheckFill } from "react-icons/bs";
-import { MdCloudUpload } from "react-icons/md";
+import { ImFolderPlus } from "react-icons/im";
+import { MdKeyboardVoice } from "react-icons/md";
 
 export default function FinalRegistration() {
   const [isRecording, setIsRecording] = useState(false);
   const [audioUrl, setAudioUrl] = useState(null);
   const [file, setFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
 
@@ -50,12 +50,15 @@ export default function FinalRegistration() {
     startRecording();
   };
 
-  const uploadAudio = async () => {
-    //'POST' : Send a Voice To Back-End
-    if (!audioUrl) return;
-    const audioBlob = new Blob(audioChunksRef.current, { type: "audio/wav" });
+  const uploadData = async () => {
     const formData = new FormData();
-    formData.append("audio", audioBlob, "recording.wav");
+    if (audioUrl) {
+      const audioBlob = new Blob(audioChunksRef.current, { type: "audio/wav" });
+      formData.append("audio", audioBlob, "recording.wav");
+    }
+    if (file) {
+      formData.append("file", file);
+    }
     try {
       const response = await fetch("YOUR_SERVER_ENDPOINT", {
         method: "POST",
@@ -68,36 +71,22 @@ export default function FinalRegistration() {
         console.error("Upload failed:", response.statusText);
       }
     } catch (error) {
-      console.error("Error uploading audio:", error);
+      console.error("Error uploading data:", error);
     }
   };
 
   const handleFileChange = (event) => {
-    setFile(event.target.files[0]);
-  };
-
-  const uploadFile = async () => {
-    if (!file) return;
-    const formData = new FormData();
-    formData.append("file", file);
-    try {
-      const response = await fetch("YOUR_SERVER_ENDPOINT", {
-        method: "POST",
-        body: formData,
-      });
-      if (response.ok) {
-        const result = await response.json();
-        console.log("File upload successful:", result);
-      } else {
-        console.error("File upload failed:", response.statusText);
-      }
-    } catch (error) {
-      console.error("Error uploading file:", error);
+    const selectedFile = event.target.files[0];
+    setFile(selectedFile);
+    if (selectedFile && selectedFile.type.startsWith("image/")) {
+      setPreviewUrl(URL.createObjectURL(selectedFile));
+    } else {
+      setPreviewUrl(null);
     }
   };
 
   return (
-    <div className="xl:w-[45%] lg:w-[55%] md:w-[75%] sm:w-[70%] w-[80%] mx-auto bg-white rounded-2xl shadow-xl flex flex-col items-center p-10 gap-8">
+    <div className="xl:w-[45%] lg:w-[55%] md:w-[75%] sm:w-[70%] w-[80%] mx-auto bg-white rounded-lg shadow-xl flex flex-col items-center py-9 px-8 gap-8">
       <h1 className="md:text-3xl sm:text-2xl text-lg font-bold text-Primary">
         اطلاعات تکمیلی
       </h1>
@@ -110,44 +99,37 @@ export default function FinalRegistration() {
           label="شماره همراه"
           className="!w-full"
           variant="outlined"
+          type="number"
           helperText={
-            <Link to="/" className="text-Primary">
-              اصلاح شماره تماس
-            </Link>
+            <Button className="!bg-Primary !text-sm" variant="contained">
+              ارسال کد
+            </Button>
           }
-          InputProps={{ sx: { borderRadius: 4 } }}
-          InputLabelProps={{ className: "sm:!text-base !text-sm" }}
         />
         <TextField
           id="outlined-basic"
           label="کد را وارد کنید"
           variant="outlined"
           className="w-full"
-          InputProps={{ sx: { borderRadius: 4 } }}
-          InputLabelProps={{ className: "sm:!text-base !text-sm" }}
         />
       </MuiCustomThemeComponent>
-
-      <div className="w-full flex flex-col items-center bg-gray-300 rounded-2xl shadow-xl gap-2 p-5">
+      <div className="w-full flex flex-col items-center bg-gray-300 rounded-lg shadow-xl gap-2 p-5">
         <span className="text-gray-700 md:text-xl sm:text-base text-sm font-bold text-center">
           تصویری از فروشگاه خود آپلود کنید
         </span>
         <div className="w-full flex items-center justify-center gap-10">
           <label className="custom-file-upload cursor-pointer">
-            <MdCloudUpload className="text-2xl text-Primary" />
+            <ImFolderPlus className="sm:text-4xl text-2xl text-Primary" />
             <input type="file" accept="*/*" onChange={handleFileChange} />
           </label>
-          <button
-            onClick={uploadFile}
-            disabled={!file}
-            className="text-2xl text-Primary"
-          >
-            <BsFillCloudCheckFill />
-          </button>
+          <img
+            src={previewUrl}
+            alt="Preview"
+            className="w-[70px] h-[70px] rounded-2xl"
+          />
         </div>
       </div>
-
-      <div className="w-full flex flex-col items-center bg-gray-300 rounded-2xl shadow-xl gap-2 p-5">
+      <div className="w-full flex flex-col items-center bg-gray-300 rounded-lg shadow-xl gap-2 p-5">
         <span className="text-gray-700 md:text-xl sm:text-base text-sm font-bold text-center">
           توصیف مختصری از فعالیت فروشگاه در قالب وویس آماده کنید
         </span>
@@ -164,21 +146,14 @@ export default function FinalRegistration() {
             disabled={isRecording}
             className="text-2xl text-Primary"
           >
-            <FaPlay />
+            <MdKeyboardVoice />
           </button>
           <button
             onClick={stopRecording}
             disabled={!isRecording}
             className="text-2xl text-Primary"
           >
-            <FaPause />
-          </button>
-          <button
-            onClick={uploadAudio}
-            disabled={!audioUrl}
-            className="text-2xl text-Primary"
-          >
-            <BsFillCloudCheckFill />
+            <FaRegStopCircle />
           </button>
         </div>
         {audioUrl && (
@@ -188,11 +163,12 @@ export default function FinalRegistration() {
           </audio>
         )}
       </div>
-
       <div className="w-full flex flex-col items-center gap-1">
         <MuiCustomThemeComponent>
           <Button
-            className="!bg-Primary !rounded-2xl md:!text-xl sm:!text-base !text-sm !font-bold !w-full !py-3"
+            onClick={uploadData}
+            disabled={!audioUrl && !file}
+            className="!bg-Primary md:!text-xl sm:!text-base !text-sm !font-bold !w-full !py-3"
             variant="contained"
           >
             ثبت نهایی
@@ -210,7 +186,6 @@ export default function FinalRegistration() {
           </span>
         </MuiCustomThemeComponent>
       </div>
-
       <div className="w-full flex items-center gap-2">
         <span className="w-full bg-gray-600 h-[2px] rounded-full"></span>
         <span className="text-gray-600 text-nowrap text-sm">
@@ -218,7 +193,6 @@ export default function FinalRegistration() {
         </span>
         <span className="w-full bg-gray-600 h-[2px] rounded-full"></span>
       </div>
-
       <div className="w-full flex items-center justify-center gap-9">
         <Link to="https://bargebanafsh.com/" className="sm:text-3xl text-2xl">
           <FaGoogle />
