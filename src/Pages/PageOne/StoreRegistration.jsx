@@ -144,14 +144,16 @@ export default function StoreRegistration() {
           />
         </MuiCustomThemeComponent>
       </div>
-      <Button
-        onSubmit={handleSubmit}
-        disabled={!isFormValid()}
-        className="!bg-Primary md:!w-[40%] md:!text-xl sm:!text-base !text-sm !font-bold !w-full !py-3"
-        variant="contained"
-      >
-        تایید و ارسال
-      </Button>
+      <Link to="/Step-Two" className="w-full flex items-center justify-center">
+        <Button
+          onSubmit={handleSubmit}
+          disabled={!isFormValid()}
+          className="!bg-Primary md:!w-[40%] md:!text-xl sm:!text-base !text-sm !font-bold !w-full !py-3"
+          variant="contained"
+        >
+          تایید و ارسال
+        </Button>
+      </Link>
     </div>
   );
 }
