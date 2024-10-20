@@ -1,54 +1,66 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import MuiCustomThemeComponent from "../../Components/MuiCostumTheme";
 import { Autocomplete, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
-import { Link, useNavigate } from "react-router-dom";
-import { useContact } from "../../Components/ContactContext";
+import { useNavigate } from "react-router-dom";
+import { ContactContext } from "../../Components/ContactContext";
+import CryptoJS from "crypto-js";
 
 export default function StoreRegistration() {
-  const { setPhone } = useContact();
+  const { setManagerPhone } = useContext(ContactContext);
   const [phoneInput, setPhoneInput] = useState("");
   const [storeName, setStoreName] = useState("");
   const [manager, setManager] = useState("");
-  const [workArea, setWorkArea] = useState("");
   const [address, setAddress] = useState("");
+  const [jobsData, setJobsData] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [names, setNames] = useState([]);
   const navigate = useNavigate();
 
   const isFormValid = () => {
-    return phoneInput && storeName && manager && inputValue && address;
+    return phoneInput && storeName && manager && address && inputValue;
   };
 
-  const apiUrl = "https://api.example.com/names"; //get API for WorkArea
+  const nonceCode = () => {
+    const secretKey = "@Brgb_form_Presentor_0";
+    const timestamp = Date.now();
+    const action = "";
+    const md5SecretKey = CryptoJS.MD5(secretKey).toString();
+    const data = `${timestamp}|${action}|${md5SecretKey}`;
+    const nonce = btoa(data);
+    return nonce;
+  };
 
   useEffect(() => {
-    const fetchNames = async () => {
-      const response = await fetch(apiUrl);
-      const data = await response.json();
-      setNames(data);
-    };
-    fetchNames();
+    fetch("../../../JobsData/Gl4B_shop_type.json")
+      .then((response) => response.json())
+      .then((data) => setJobsData(data))
+      .catch((error) => console.error("Error fetching data : ", error));
   }, []);
+
+  const getOptionLabel = (option) => {
+    return option.label ? option.label : "";
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isFormValid()) {
-      setPhone(phoneInput);
+      const newNonce = nonceCode();
+      setManagerPhone(phoneInput);
       const data = {
-        managerName: manager,
-        storeName: storeName,
-        phone: phoneInput,
-        work: inputValue,
-        address: address,
+        ManagerName: manager,
+        ShopName: storeName,
+        ManagerPhone: phoneInput,
+        ShopType: inputValue,
+        ShopAddress: address,
+        brgb_nonce_visitor_input: newNonce,
       };
       try {
-        const response = await fetch("YOUR_SERVER_ENDPOINT", {
+        const response = await fetch("https://brgb.ir/present.php", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json",
+            "Content-Type": "application/x-www-form-urlencoded",
           },
-          body: JSON.stringify(data),
+          body: new URLSearchParams(data).toString(),
         });
         if (response.ok) {
           const result = await response.json();
@@ -102,10 +114,9 @@ export default function StoreRegistration() {
           <MuiCustomThemeComponent>
             <Autocomplete
               disablePortal
-              options={names}
-              getOptionLabel={(option) => option}
-              value={inputValue}
-              onChange={(event, newValue) => {
+              options={jobsData}
+              getOptionLabel={getOptionLabel}
+              onChange={(newValue) => {
                 setInputValue(newValue);
               }}
               sx={{ width: "100%" }}
@@ -144,16 +155,14 @@ export default function StoreRegistration() {
           />
         </MuiCustomThemeComponent>
       </div>
-      <Link to="/Step-Two" className="w-full flex items-center justify-center">
-        <Button
-          onSubmit={handleSubmit}
-          disabled={!isFormValid()}
-          className="!bg-Primary md:!w-[40%] md:!text-xl sm:!text-base !text-sm !font-bold !w-full !py-3"
-          variant="contained"
-        >
-          تایید و ارسال
-        </Button>
-      </Link>
+      <Button
+        onClick={handleSubmit}
+        disabled={!isFormValid()}
+        className="!bg-Primary md:!w-[40%] md:!text-xl sm:!text-base !text-sm !font-bold !w-full !py-3"
+        variant="contained"
+      >
+        تایید و ارسال
+      </Button>
     </div>
   );
 }

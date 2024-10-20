@@ -1,16 +1,12 @@
-import React, { createContext, useContext, useState } from "react";
+import React, { createContext, useState } from "react";
 
-const ContactContext = createContext();
-
-export const useContact = () => {
-  return useContext(ContactContext);
-};
+export const ContactContext = createContext();
 
 export const ContactProvider = ({ children }) => {
-  const [phone, setPhone] = useState("");
+  const [managerPhone, setManagerPhone] = useState("");
 
   return (
-    <ContactContext.Provider value={{ phone, setPhone }}>
+    <ContactContext.Provider value={{ managerPhone, setManagerPhone }}>
       {children}
     </ContactContext.Provider>
   );
