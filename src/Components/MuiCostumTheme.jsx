@@ -7,6 +7,18 @@ import { CacheProvider } from "@emotion/react";
 
 const theme = createTheme({
   direction: "rtl",
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          "&.Mui-disabled": {
+            backgroundColor: "#636e72",
+            color: "#2d3436",
+          },
+        },
+      },
+    },
+  },
 });
 
 const cacheRtl = createCache({

@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { TextField } from "@mui/material";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
@@ -15,13 +15,24 @@ import CryptoJS from "crypto-js";
 
 export default function FinalRegistration() {
   const [isRecording, setIsRecording] = useState(false);
-  const [audioUrl, setAudioUrl] = useState(null);
+  const [timeElapsed, setTimeElapsed] = useState(0);
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
   const [phoneInput, setPhoneInput] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
+  const [audioBlob, setAudioBlob] = useState(null);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
+
+  useEffect(() => {
+    let timer;
+    if (isRecording) {
+      timer = setInterval(() => {
+        setTimeElapsed((prev) => prev + 1);
+      }, 1000);
+    }
+    return () => clearInterval(timer);
+  }, [isRecording]);
 
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -31,12 +42,12 @@ export default function FinalRegistration() {
     };
     mediaRecorderRef.current.onstop = () => {
       const audioBlob = new Blob(audioChunksRef.current, { type: "audio/wav" });
-      const url = URL.createObjectURL(audioBlob);
-      setAudioUrl(url);
+      setAudioBlob(audioBlob);
       audioChunksRef.current = [];
     };
     mediaRecorderRef.current.start();
     setIsRecording(true);
+    setTimeElapsed(0);
   };
 
   const stopRecording = () => {
@@ -45,23 +56,24 @@ export default function FinalRegistration() {
   };
 
   const restartRecording = () => {
-    setAudioUrl(null);
-    startRecording();
+    // setAudioUrl("");
+    setAudioBlob(null);
+    audioChunksRef.current = [];
+    setIsRecording(false);
+    setTimeElapsed(0);
   };
 
   const uploadData = async () => {
+    if (!audioBlob) return;
     const formData = new FormData();
-    if (audioUrl) {
-      const audioBlob = new Blob(audioChunksRef.current, { type: "audio/wav" });
-      formData.append("audio", audioBlob, "recording.wav");
-    }
-    if (file) {
-      formData.append("file", file);
-    }
+    formData.append("audio", audioBlob, "recording.wav");
+    formData.append("PhoneVerify", phoneVerify);
+    formData.append("ManagerPhone", phoneInput);
+    formData.append("brgb_nonce_visitor_input", nonceCode());
     try {
-      formData.append("PhoneVerify", phoneVerify);
-      formData.append("ManagerPhone", phoneInput);
-      formData.append("brgb_nonce_visitor_input", nonceCode());
+      if (file) {
+        formData.append("file", file);
+      }
       const response = await fetch("https://brgb.ir/present.php", {
         method: "POST",
         body: formData,
@@ -69,11 +81,14 @@ export default function FinalRegistration() {
       if (response.ok) {
         const result = await response.json();
         console.log("Upload successful:", result);
+        alert("تکمیل شد ، با تشکر");
       } else {
         console.error("Upload failed:", response.statusText);
+        alert("مشخصات وارد شده صحیح نمی‌باشد");
       }
     } catch (error) {
       console.error("Error uploading data:", error);
+      alert("ارسال داده با خطا مواجه شد ، مجددا تلاش کنید");
     }
   };
 
@@ -141,7 +156,7 @@ export default function FinalRegistration() {
     }
   };
 
-  const phoneVerify = false;
+  let phoneVerify = false;
   const CheckVerifyCodes = async (e) => {
     e.preventDefault();
     if (isFormValid()) {
@@ -162,8 +177,8 @@ export default function FinalRegistration() {
         });
         if (response.ok) {
           const result = await response.json();
-          if (result.result === "Success") {
-            phoneVerify(true);
+          if (result.result === "Verified") {
+            phoneVerify = true;
           }
           console.log("Upload successful:", result);
         } else {
@@ -240,32 +255,35 @@ export default function FinalRegistration() {
         <span className="text-gray-700 md:text-xl sm:text-base text-sm font-bold text-center">
           توصیف مختصری از فعالیت فروشگاه در قالب وویس آماده کنید
         </span>
-        <div className="w-full flex items-center justify-center gap-10">
-          <button
-            onClick={restartRecording}
-            disabled={isRecording}
-            className="text-2xl text-Primary"
-          >
-            <VscDebugRestart />
-          </button>
-          <button
-            onClick={startRecording}
-            disabled={isRecording}
-            className="text-2xl text-Primary"
-          >
-            <MdKeyboardVoice />
-          </button>
-          <button
-            onClick={stopRecording}
-            disabled={!isRecording}
-            className="text-2xl text-Primary"
-          >
-            <FaRegStopCircle />
-          </button>
+        <div className="w-full flex flex-col items-center">
+          <div className="w-full flex items-center justify-center gap-10">
+            <button
+              onClick={restartRecording}
+              disabled={isRecording}
+              className="text-2xl text-Primary"
+            >
+              <VscDebugRestart />
+            </button>
+            <button
+              onClick={startRecording}
+              disabled={isRecording}
+              className="text-2xl text-Primary"
+            >
+              <MdKeyboardVoice />
+            </button>
+            <button
+              onClick={stopRecording}
+              disabled={!isRecording}
+              className="text-2xl text-Primary"
+            >
+              <FaRegStopCircle />
+            </button>
+          </div>
+          <span className="text-Primary font-bold">{timeElapsed}</span>
         </div>
-        {audioUrl && (
+        {audioBlob && (
           <audio controls>
-            <source src={audioUrl} type="audio/wav" />
+            <source src={audioBlob} type="audio/wav" />
             مرورگر شما از پخش صوت پشتیبانی نمیکند
           </audio>
         )}
@@ -273,7 +291,7 @@ export default function FinalRegistration() {
       <div className="w-full flex flex-col items-center gap-1">
         <Button
           onClick={uploadData}
-          disabled={!audioUrl && !file}
+          disabled={!audioBlob && !file}
           className="!bg-Primary md:!text-xl sm:!text-base !text-sm !font-bold !w-full !py-3"
           variant="contained"
         >
