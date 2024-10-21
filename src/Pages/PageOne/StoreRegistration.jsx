@@ -113,7 +113,7 @@ export default function StoreRegistration() {
             options={jobsData}
             getOptionLabel={getOptionLabel}
             onChange={(newValue) => {
-              setInputValue(newValue);
+              setInputValue(newValue ? getOptionLabel(newValue) : "Error");
             }}
             sx={{ width: "100%" }}
             renderInput={(params) => (
