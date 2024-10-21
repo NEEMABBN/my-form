@@ -13,10 +13,12 @@ export default function StoreRegistration() {
   const [address, setAddress] = useState("");
   const [jobsData, setJobsData] = useState([]);
   const [inputValue, setInputValue] = useState("");
+
+  const [test, setTest] = useState("");
   const navigate = useNavigate();
 
   const isFormValid = () => {
-    return phoneInput && storeName && manager && address && inputValue;
+    return phoneInput && storeName && manager && address && test;
   };
 
   const nonceCode = () => {
@@ -49,7 +51,7 @@ export default function StoreRegistration() {
         ManagerName: manager,
         ShopName: storeName,
         ManagerPhone: phoneInput,
-        ShopType: inputValue,
+        ShopType: test,
         ShopAddress: address,
         brgb_nonce_visitor_input: newNonce,
       };
@@ -112,8 +114,13 @@ export default function StoreRegistration() {
             disablePortal
             options={jobsData}
             getOptionLabel={getOptionLabel}
-            onChange={(newValue) => {
-              setInputValue(newValue ? getOptionLabel(newValue) : "Error");
+            onChange={(event, newValue) => {
+              setTest(
+                typeof newValue === "string"
+                  ? newValue
+                  : getOptionLabel(newValue.value)
+              );
+              setTest(newValue.value);
             }}
             sx={{ width: "100%" }}
             renderInput={(params) => (
