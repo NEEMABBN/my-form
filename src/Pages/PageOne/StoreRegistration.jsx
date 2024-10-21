@@ -31,7 +31,7 @@ export default function StoreRegistration() {
   };
 
   useEffect(() => {
-    fetch("../../JobsData/Gl4B_shop_type.json")
+    fetch("./src/JobsData/Gl4B_shop_type.json")
       .then((response) => response.json())
       .then((data) => setJobsData(data))
       .catch((error) => console.error("Error fetching data : ", error));
