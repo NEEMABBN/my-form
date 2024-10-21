@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import MuiCustomThemeComponent from "../../Components/MuiCostumTheme";
 import { Autocomplete, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
@@ -89,71 +88,65 @@ export default function StoreRegistration() {
       </p>
       <div className="w-full flex flex-col items-center md:gap-10 gap-5">
         <div className="w-full flex md:flex-row flex-col items-center md:justify-between justify-normal md:gap-10 gap-5">
-          <MuiCustomThemeComponent>
-            <TextField
-              id="outlined-basic"
-              label="نام فروشگاه"
-              className="!w-full"
-              variant="outlined"
-              value={storeName}
-              onChange={(e) => setStoreName(e.target.value)}
-              required
-            />
-            <TextField
-              id="outlined-basic"
-              label="نام مدیر"
-              variant="outlined"
-              className="w-full"
-              value={manager}
-              onChange={(e) => setManager(e.target.value)}
-              required
-            />
-          </MuiCustomThemeComponent>
-        </div>
-        <div className="w-full flex md:flex-row flex-col items-center md:justify-between justify-normal md:gap-10 gap-5">
-          <MuiCustomThemeComponent>
-            <Autocomplete
-              disablePortal
-              options={jobsData}
-              getOptionLabel={getOptionLabel}
-              onChange={(newValue) => {
-                setInputValue(newValue);
-              }}
-              sx={{ width: "100%" }}
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  label="حوزه کاری"
-                  variant="outlined"
-                  onChange={(e) => setInputValue(e.target.value)}
-                  required
-                />
-              )}
-              freeSolo
-            />
-            <TextField
-              id="outlined-basic"
-              label="شماره همراه"
-              variant="outlined"
-              type="number"
-              className="w-full"
-              value={phoneInput}
-              onChange={(e) => setPhoneInput(e.target.value)}
-              required
-            />
-          </MuiCustomThemeComponent>
-        </div>
-        <MuiCustomThemeComponent>
           <TextField
             id="outlined-basic"
-            label="آدرس"
+            label="نام فروشگاه"
+            className="!w-full"
             variant="outlined"
-            className="w-full"
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
+            value={storeName}
+            onChange={(e) => setStoreName(e.target.value)}
             required
           />
-        </MuiCustomThemeComponent>
+          <TextField
+            id="outlined-basic"
+            label="نام مدیر"
+            variant="outlined"
+            className="w-full"
+            value={manager}
+            onChange={(e) => setManager(e.target.value)}
+            required
+          />
+        </div>
+        <div className="w-full flex md:flex-row flex-col items-center md:justify-between justify-normal md:gap-10 gap-5">
+          <Autocomplete
+            disablePortal
+            options={jobsData}
+            getOptionLabel={getOptionLabel}
+            onChange={(newValue) => {
+              setInputValue(newValue);
+            }}
+            sx={{ width: "100%" }}
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="حوزه کاری"
+                variant="outlined"
+                onChange={(e) => setInputValue(e.target.value)}
+                required
+              />
+            )}
+            freeSolo
+          />
+          <TextField
+            id="outlined-basic"
+            label="شماره همراه"
+            variant="outlined"
+            type="number"
+            className="w-full"
+            value={phoneInput}
+            onChange={(e) => setPhoneInput(e.target.value)}
+            required
+          />
+        </div>
+        <TextField
+          id="outlined-basic"
+          label="آدرس"
+          variant="outlined"
+          className="w-full"
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          required
+        />
       </div>
       <Button
         onClick={handleSubmit}

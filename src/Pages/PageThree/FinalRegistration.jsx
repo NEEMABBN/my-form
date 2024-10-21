@@ -1,5 +1,4 @@
 import React, { useRef, useState } from "react";
-import MuiCustomThemeComponent from "../../Components/MuiCostumTheme";
 import { TextField } from "@mui/material";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
@@ -188,41 +187,39 @@ export default function FinalRegistration() {
       <p className="sm:text-base text-sm text-gray-600 text-center">
         فرصت فروش بیشتر در بین میلیون‌ها مشتری:)
       </p>
-      <MuiCustomThemeComponent>
-        <TextField
-          id="outlined-basic"
-          label="شماره همراه"
-          className="!w-full"
-          variant="outlined"
-          type="number"
-          onChange={getPhone}
-          helperText={
-            <Button
-              onClick={sendCode}
-              className="!bg-Primary !text-sm"
-              variant="contained"
-            >
-              ارسال کد
-            </Button>
-          }
-        />
-        <TextField
-          id="outlined-basic"
-          label="کد را وارد کنید"
-          variant="outlined"
-          className="w-full"
-          onChange={getCode}
-          helperText={
-            <Button
-              onClick={CheckVerifyCodes}
-              className="!bg-Primary !text-sm"
-              variant="contained"
-            >
-              بررسی کد
-            </Button>
-          }
-        />
-      </MuiCustomThemeComponent>
+      <TextField
+        id="outlined-basic"
+        label="شماره همراه"
+        className="!w-full"
+        variant="outlined"
+        type="number"
+        onChange={getPhone}
+        helperText={
+          <Button
+            onClick={sendCode}
+            className="!bg-Primary !text-sm"
+            variant="contained"
+          >
+            ارسال کد
+          </Button>
+        }
+      />
+      <TextField
+        id="outlined-basic"
+        label="کد را وارد کنید"
+        variant="outlined"
+        className="w-full"
+        onChange={getCode}
+        helperText={
+          <Button
+            onClick={CheckVerifyCodes}
+            className="!bg-Primary !text-sm"
+            variant="contained"
+          >
+            بررسی کد
+          </Button>
+        }
+      />
       <div className="w-full flex flex-col items-center bg-gray-300 rounded-lg shadow-xl gap-2 p-5">
         <span className="text-gray-700 md:text-xl sm:text-base text-sm font-bold text-center">
           تصویری از فروشگاه خود آپلود کنید
@@ -274,27 +271,25 @@ export default function FinalRegistration() {
         )}
       </div>
       <div className="w-full flex flex-col items-center gap-1">
-        <MuiCustomThemeComponent>
-          <Button
-            onClick={uploadData}
-            disabled={!audioUrl && !file}
-            className="!bg-Primary md:!text-xl sm:!text-base !text-sm !font-bold !w-full !py-3"
-            variant="contained"
-          >
-            ثبت نهایی
-          </Button>
-          <span className="text-center sm:text-base text-sm text-gray-600">
-            ورود شما به معنای پذیرش{" "}
-            <Link to="" className="text-Primary">
-              شرایط برگ بنفش{" "}
-            </Link>
-            و{" "}
-            <Link to="" className="text-Primary">
-              قوانین حریم خصوصی{" "}
-            </Link>
-            است
-          </span>
-        </MuiCustomThemeComponent>
+        <Button
+          onClick={uploadData}
+          disabled={!audioUrl && !file}
+          className="!bg-Primary md:!text-xl sm:!text-base !text-sm !font-bold !w-full !py-3"
+          variant="contained"
+        >
+          ثبت نهایی
+        </Button>
+        <span className="text-center sm:text-base text-sm text-gray-600">
+          ورود شما به معنای پذیرش{" "}
+          <Link to="" className="text-Primary">
+            شرایط برگ بنفش{" "}
+          </Link>
+          و{" "}
+          <Link to="" className="text-Primary">
+            قوانین حریم خصوصی{" "}
+          </Link>
+          است
+        </span>
       </div>
       <div className="w-full flex items-center gap-2">
         <span className="w-full bg-gray-600 h-[2px] rounded-full"></span>

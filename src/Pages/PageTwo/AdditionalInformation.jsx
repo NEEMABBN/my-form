@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import MuiCustomThemeComponent from "../../Components/MuiCostumTheme";
 import {
   Checkbox,
   FormControl,
@@ -85,82 +84,76 @@ export default function AdditionalInformation() {
       </p>
       <div className="w-full flex flex-col items-center md:gap-10 gap-5">
         <div className="w-full flex md:flex-row flex-col items-center md:justify-between justify-normal md:gap-10 gap-5">
-          <MuiCustomThemeComponent>
-            <TextField
-              id="outlined-basic"
-              label="آدرس سایت"
-              className="!w-full"
-              variant="outlined"
-              value={website}
-              onChange={(e) => setWebsite(e.target.value)}
-            />
-            <TextField
-              id="outlined-basic"
-              label="پیج اینستاگرام"
-              variant="outlined"
-              className="w-full"
-              value={instagram}
-              onChange={(e) => setInstagram(e.target.value)}
-            />
-          </MuiCustomThemeComponent>
+          <TextField
+            id="outlined-basic"
+            label="آدرس سایت"
+            className="!w-full"
+            variant="outlined"
+            value={website}
+            onChange={(e) => setWebsite(e.target.value)}
+          />
+          <TextField
+            id="outlined-basic"
+            label="پیج اینستاگرام"
+            variant="outlined"
+            className="w-full"
+            value={instagram}
+            onChange={(e) => setInstagram(e.target.value)}
+          />
         </div>
         <div className="w-full flex md:flex-row flex-col items-center md:justify-between justify-normal md:gap-10 gap-5">
-          <MuiCustomThemeComponent>
-            <TextField
-              id="outlined-basic"
-              label="سابقه تبلیغات"
-              variant="outlined"
-              type="number"
-              className="w-full"
-              value={adsPrice}
-              onChange={(e) => setAdsPrice(e.target.value)}
-              helperText={
-                <FormControlLabel
-                  control={
-                    <Checkbox
-                      checked={adsResult}
-                      onChange={handleChangeCheckBox}
-                    />
-                  }
-                  label="نتیجه‌ایی داشته؟"
-                />
-              }
-            />
-            <TextField
-              id="outlined-basic"
-              label="سابقه آگهی برای نیرو"
-              variant="outlined"
-              className="w-full"
-              value={adsChannel}
-              onChange={(e) => setAdsChannel(e.target.value)}
-            />
-          </MuiCustomThemeComponent>
+          <TextField
+            id="outlined-basic"
+            label="سابقه تبلیغات"
+            variant="outlined"
+            type="number"
+            className="w-full"
+            value={adsPrice}
+            onChange={(e) => setAdsPrice(e.target.value)}
+            helperText={
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={adsResult}
+                    onChange={handleChangeCheckBox}
+                  />
+                }
+                label="نتیجه‌ایی داشته؟"
+              />
+            }
+          />
+          <TextField
+            id="outlined-basic"
+            label="سابقه آگهی برای نیرو"
+            variant="outlined"
+            className="w-full"
+            value={adsChannel}
+            onChange={(e) => setAdsChannel(e.target.value)}
+          />
         </div>
         <div className="w-full flex md:flex-row flex-col items-center md:justify-between justify-normal md:gap-10 gap-5">
-          <MuiCustomThemeComponent>
-            <TextField
-              id="outlined-basic"
-              label="سابقه کاری"
-              type="number"
-              className="!w-full"
-              variant="outlined"
-              value={shopHistory}
-              onChange={(e) => setShopHistory(e.target.value)}
-            />
-            <FormControl fullWidth>
-              <InputLabel id="demo-simple-select-label">نوع ملک</InputLabel>
-              <Select
-                labelId="demo-simple-select-label"
-                id="demo-simple-select"
-                value={propertyType}
-                label="نوع ملک"
-                onChange={(e) => setPropertyType(e.target.value)}
-              >
-                <MenuItem value={1}>ملکی</MenuItem>
-                <MenuItem value={2}>استیجاری</MenuItem>
-              </Select>
-            </FormControl>
-          </MuiCustomThemeComponent>
+          <TextField
+            id="outlined-basic"
+            label="سابقه کاری"
+            type="number"
+            className="!w-full"
+            variant="outlined"
+            value={shopHistory}
+            onChange={(e) => setShopHistory(e.target.value)}
+          />
+          <FormControl fullWidth>
+            <InputLabel id="demo-simple-select-label">نوع ملک</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              id="demo-simple-select"
+              value={propertyType}
+              label="نوع ملک"
+              onChange={(e) => setPropertyType(e.target.value)}
+            >
+              <MenuItem value={1}>ملکی</MenuItem>
+              <MenuItem value={2}>استیجاری</MenuItem>
+            </Select>
+          </FormControl>
         </div>
       </div>
       <Button
