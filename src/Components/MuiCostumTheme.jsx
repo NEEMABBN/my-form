@@ -5,10 +5,9 @@ import createCache from "@emotion/cache";
 import { ThemeProvider, createTheme } from "@mui/material";
 import { CacheProvider } from "@emotion/react";
 
-const theme = () =>
-  createTheme({
-    direction: "rtl",
-  });
+const theme = createTheme({
+  direction: "rtl",
+});
 
 const cacheRtl = createCache({
   key: "muirtl",
