@@ -24,6 +24,7 @@ export default function FinalRegistration() {
   const [verifyCode, setVerifyCode] = useState("");
   const [audioBlob, setAudioBlob] = useState(null);
   const [audioUrl, setAudioUrl] = useState("");
+  const [isVerifySent, setIsVerifySent] = useState(false);
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
 
@@ -185,6 +186,7 @@ export default function FinalRegistration() {
           if (result.result === "Verified") {
             phoneVerify = true;
             alert("کد تایید شد");
+            setIsVerifySent(true);
           }
           console.log("Upload successful:", result);
         } else {
@@ -208,40 +210,46 @@ export default function FinalRegistration() {
       <p className="sm:text-base text-sm text-gray-600 text-center">
         فرصت فروش بیشتر در بین میلیون‌ها مشتری:)
       </p>
-      <TextField
-        id="outlined-basic"
-        label="شماره همراه"
-        className="!w-full"
-        variant="outlined"
-        type="number"
-        value={phoneInput}
-        InputProps={{ readOnly: true }}
-        helperText={
-          <Button
-            onClick={sendCode}
-            className="!bg-Primary !text-sm"
-            variant="contained"
-          >
-            ارسال کد
-          </Button>
-        }
-      />
-      <TextField
-        id="outlined-basic"
-        label="کد را وارد کنید"
-        variant="outlined"
-        className="w-full"
-        onChange={getCode}
-        helperText={
-          <Button
-            onClick={CheckVerifyCodes}
-            className="!bg-Primary !text-sm"
-            variant="contained"
-          >
-            بررسی کد
-          </Button>
-        }
-      />
+      {!isVerifySent ? (
+        <div className="w-full flex flex-col items-center gap-8">
+          <TextField
+            id="outlined-basic"
+            label="شماره همراه"
+            className="!w-full"
+            variant="outlined"
+            type="number"
+            value={phoneInput}
+            InputProps={{ readOnly: true }}
+            helperText={
+              <Button
+                onClick={sendCode}
+                className="!bg-Primary !text-sm"
+                variant="contained"
+              >
+                ارسال کد
+              </Button>
+            }
+          />
+          <TextField
+            id="outlined-basic"
+            label="کد را وارد کنید"
+            variant="outlined"
+            className="w-full"
+            onChange={getCode}
+            helperText={
+              <Button
+                onClick={CheckVerifyCodes}
+                className="!bg-Primary !text-sm"
+                variant="contained"
+              >
+                بررسی کد
+              </Button>
+            }
+          />
+        </div>
+      ) : (
+        <span className="text-Primary font-bold">شماره تایید شد :)</span>
+      )}
       <div className="w-full flex flex-col items-center bg-gray-300 rounded-lg shadow-xl gap-2 p-5">
         <span className="text-gray-700 md:text-xl sm:text-base text-sm font-bold text-center">
           تصویری از فروشگاه خود آپلود کنید
