@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { TextField } from "@mui/material";
 import { Link } from "react-router-dom";
 import Button from "@mui/material/Button";
@@ -12,8 +12,10 @@ import { VscDebugRestart } from "react-icons/vsc";
 import { ImFolderPlus } from "react-icons/im";
 import { MdKeyboardVoice } from "react-icons/md";
 import CryptoJS from "crypto-js";
+import { ContactContext } from "../../Components/ContactContext";
 
 export default function FinalRegistration() {
+  const { managerPhone } = useContext(ContactContext);
   const [isRecording, setIsRecording] = useState(false);
   const [timeElapsed, setTimeElapsed] = useState(0);
   const [file, setFile] = useState(null);
@@ -21,6 +23,7 @@ export default function FinalRegistration() {
   const [phoneInput, setPhoneInput] = useState("");
   const [verifyCode, setVerifyCode] = useState("");
   const [audioBlob, setAudioBlob] = useState(null);
+  const [audioUrl, setAudioUrl] = useState("");
   const mediaRecorderRef = useRef(null);
   const audioChunksRef = useRef([]);
 
@@ -34,6 +37,10 @@ export default function FinalRegistration() {
     return () => clearInterval(timer);
   }, [isRecording]);
 
+  useEffect(() => {
+    setPhoneInput(managerPhone);
+  }, [managerPhone]);
+
   const startRecording = async () => {
     const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
     mediaRecorderRef.current = new MediaRecorder(stream);
@@ -43,6 +50,7 @@ export default function FinalRegistration() {
     mediaRecorderRef.current.onstop = () => {
       const audioBlob = new Blob(audioChunksRef.current, { type: "audio/wav" });
       setAudioBlob(audioBlob);
+      setAudioUrl(URL.createObjectURL(audioBlob));
       audioChunksRef.current = [];
     };
     mediaRecorderRef.current.start();
@@ -56,7 +64,7 @@ export default function FinalRegistration() {
   };
 
   const restartRecording = () => {
-    // setAudioUrl("");
+    setAudioUrl("");
     setAudioBlob(null);
     audioChunksRef.current = [];
     setIsRecording(false);
@@ -106,9 +114,6 @@ export default function FinalRegistration() {
     return phoneInput;
   };
 
-  const getPhone = (e) => {
-    setPhoneInput(e.target.value);
-  };
   const getCode = (e) => {
     setVerifyCode(e.target.value);
   };
@@ -179,6 +184,7 @@ export default function FinalRegistration() {
           const result = await response.json();
           if (result.result === "Verified") {
             phoneVerify = true;
+            alert("کد تایید شد");
           }
           console.log("Upload successful:", result);
         } else {
@@ -208,7 +214,8 @@ export default function FinalRegistration() {
         className="!w-full"
         variant="outlined"
         type="number"
-        onChange={getPhone}
+        value={phoneInput}
+        InputProps={{ readOnly: true }}
         helperText={
           <Button
             onClick={sendCode}
@@ -260,30 +267,36 @@ export default function FinalRegistration() {
             <button
               onClick={restartRecording}
               disabled={isRecording}
-              className="text-2xl text-Primary"
+              className={`text-2xl ${
+                isRecording ? "text-gray-600" : "text-Primary"
+              }`}
             >
               <VscDebugRestart />
             </button>
             <button
               onClick={startRecording}
               disabled={isRecording}
-              className="text-2xl text-Primary"
+              className={`text-2xl ${
+                isRecording ? "text-gray-600" : "text-Primary"
+              }`}
             >
               <MdKeyboardVoice />
             </button>
             <button
               onClick={stopRecording}
               disabled={!isRecording}
-              className="text-2xl text-Primary"
+              className={`text-2xl ${
+                isRecording ? "text-Primary" : "text-gray-600"
+              }`}
             >
               <FaRegStopCircle />
             </button>
           </div>
           <span className="text-Primary font-bold">{timeElapsed}</span>
         </div>
-        {audioBlob && (
+        {audioUrl && (
           <audio controls>
-            <source src={audioBlob} type="audio/wav" />
+            <source src={audioUrl} type="audio/wav" />
             مرورگر شما از پخش صوت پشتیبانی نمیکند
           </audio>
         )}
@@ -311,7 +324,7 @@ export default function FinalRegistration() {
       </div>
       <div className="w-full flex items-center gap-2">
         <span className="w-full bg-gray-600 h-[2px] rounded-full"></span>
-        <span className="text-gray-600 text-nowrap text-sm">
+        <span className="text-gray-600 !text-nowrap !text-sm">
           راه‌های ارتباطی با ما
         </span>
         <span className="w-full bg-gray-600 h-[2px] rounded-full"></span>

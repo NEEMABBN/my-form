@@ -13,7 +13,6 @@ export default function StoreRegistration() {
   const [address, setAddress] = useState("");
   const [jobsData, setJobsData] = useState([]);
   const [inputValue, setInputValue] = useState("");
-
   const [test, setTest] = useState("");
   const navigate = useNavigate();
 
